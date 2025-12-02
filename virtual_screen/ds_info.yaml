@@ -1,0 +1,71 @@
+datasets_path: "/home/jupyter-mhaghigh@broadinst-ee45a/"
+
+jump_orf:
+  profiles_path: "{datasets_path}/gallery/cpg0016-jump/source_4/workspace/backend/"
+  meta_cols:
+    - Metadata_Symbol
+    - Metadata_broad_sample
+    - Metadata_JCP2022
+  pert_col: Metadata_JCP2022
+  target_features_list:
+    - slope
+
+CDRP:
+  profiles_path: "{datasets_path}/gallery/cpg0012-wawer-bioactivecompoundprofiling/broad/workspace/backend/"
+  meta_cols:
+    - Metadata_broad_sample
+    - Metadata_mmoles_per_liter2
+    - Metadata_pert_id
+    - Metadata_Sample_Dose
+    - Metadata_moa
+  pert_col: Metadata_Sample_Dose
+  target_features_list:
+    - slope
+
+lincs:
+  profiles_path: "{datasets_path}/bucket/projects/2015_10_05_DrugRepurposing_AravindSubramanian_GolubLab_Broad/workspace/backend/"
+  meta_cols:
+    - Metadata_broad_sample
+    - Metadata_dose_recode
+    - Metadata_pert_id
+    - Metadata_pert_mfc_id
+    - Metadata_InChIKey14
+    - Metadata_pert_type
+    - Metadata_moa
+    - Metadata_target
+    - Metadata_pert_id_dose
+    - Metadata_pert_name
+  pert_col: Metadata_pert_id_dose
+  target_features_list:
+    - slope
+
+jump_crispr:
+  profiles_path: "{datasets_path}/gallery/cpg0016-jump/source_13/workspace/backend/"
+  meta_cols:
+    - Metadata_NCBI_Gene_ID
+    - Metadata_Symbol
+    - Metadata_JCP2022
+  pert_col: Metadata_JCP2022
+  target_features_list:
+    - slope
+
+jump_compound:
+  profiles_path: "{datasets_path}/gallery/cpg0016-jump/source_13/workspace/backend/"
+  meta_cols:
+    - Metadata_InChIKey
+    - Metadata_InChI
+    - Metadata_JCP2022
+  pert_col: Metadata_JCP2022
+  target_features_list:
+    - slope
+
+taorf:
+  profiles_path: "{datasets_path}/gallery/cpg0017-rohban-pathways/broad/workspace/backend/"
+  meta_cols:
+    - Metadata_gene_name
+    - Metadata_pert_name
+    - Metadata_broad_sample
+    - Metadata_moa
+  pert_col: Metadata_broad_sample
+  target_features_list:
+    - slope
