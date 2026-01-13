@@ -238,6 +238,104 @@ def check_feature_similarity_dendrogram(data, feature_names, figsize):
 
     return fig
 
+
+from typing import Optional
+import matplotlib.pyplot as plt
+
+def plot_lollipop_feature_corr(
+    df: pd.DataFrame,
+    target_feature: str,
+    method: str = "spearman",
+    top_n: Optional[int] = None,
+    abs_corr: bool = False,
+    ax: Optional[plt.Axes] = None,
+    decimals: int = 2,
+    label_fontsize: int = 8,
+):
+    """
+    Lollipop chart of correlation between a target feature and all other features,
+    with correlation values annotated next to each point.
+
+    Text is placed on the right of positive correlations and on the
+    left of negative correlations.
+    """
+
+    if target_feature not in df.columns:
+        raise ValueError(f"{target_feature!r} not found in DataFrame columns.")
+
+    # Compute correlations for the target feature
+    corr = df.corr(method=method)[target_feature].drop(target_feature)
+
+    # Decide sorting key
+    sort_values = corr.abs() if abs_corr else corr
+    corr_sorted = corr.loc[sort_values.sort_values(ascending=True).index]
+
+    # Optionally keep only top_n by absolute magnitude
+    if top_n is not None:
+        corr_sorted = corr_sorted.iloc[-top_n:]
+
+    # Create axis if needed
+    created_fig = False
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(6, max(4, len(corr_sorted) * 0.25)))
+        created_fig = True
+
+    # Positions and values
+    y_pos = list(range(len(corr_sorted)))
+    x_vals = corr_sorted.values
+    labels = corr_sorted.index
+
+    # Draw stems (lines) and heads (dots)
+    ax.hlines(y=y_pos, xmin=0, xmax=x_vals)
+    ax.scatter(x_vals, y_pos)
+
+    # ---- Padding + annotation ----
+    if len(x_vals) > 0:
+        x_min = float(min(min(x_vals), 0))
+        x_max = float(max(max(x_vals), 0))
+        x_range = x_max - x_min if x_max != x_min else 1.0
+
+        # More generous padding than before, to give room for text
+        left_pad = 0.45 * x_range
+        right_pad = 0.45 * x_range
+        ax.set_xlim(x_min - left_pad, x_max + right_pad)
+
+        # Slightly bigger offset so text doesn't sit on the dots
+        offset = 0.04 * x_range
+
+        for y, x in zip(y_pos, x_vals):
+            if x >= 0:
+                text_x = x + offset
+                ha = "left"
+            else:
+                text_x = x - offset
+                ha = "right"
+
+            ax.text(
+                text_x,
+                y,
+                f"{x:.{decimals}f}",
+                va="center",
+                ha=ha,
+                fontsize=label_fontsize,
+            )
+    # ------------------------------
+
+    # Formatting
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(labels)
+    ax.set_xlabel(f"{method.capitalize()} correlation with {target_feature}")
+    # ax.set_title(f"Lollipop plot of correlations with {target_feature}")
+    ax.axvline(0, linestyle="--", linewidth=1)
+    ax.margins(y=0.02)
+
+    plt.tight_layout()
+    if created_fig:
+        plt.show()
+
+    return ax
+
+
 ################################################################################
 from scipy.signal import savgol_filter, find_peaks
 
